@@ -15,27 +15,50 @@ public class HibernateUtil {
         try {
             System.out.println("🔧 Initializing Hibernate...");
 
-            // Load properties from file
             Properties properties = new Properties();
-            try {
-                properties.load(HibernateUtil.class.getClassLoader()
-                        .getResourceAsStream("hibernate.properties"));
-                System.out.println("✅ hibernate.properties loaded successfully");
-            } catch (Exception e) {
-                System.err.println("❌ Failed to load hibernate.properties: " + e.getMessage());
-                // Fallback: set properties directly
+
+            // Ưu tiên lấy từ Environment Variables (Render)
+            String dbUrl = System.getenv("DB_URL");
+            String dbUsername = System.getenv("DB_USERNAME");
+            String dbPassword = System.getenv("DB_PASSWORD");
+
+            if (dbUrl != null && !dbUrl.isEmpty()) {
+                System.out.println("✅ Using DB config from Environment Variables");
                 properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
                 properties.setProperty("hibernate.connection.driver_class", "org.postgresql.Driver");
-                properties.setProperty("hibernate.connection.url",
-                        "jdbc:postgresql://db.cahykacskytpfqpshcvi.supabase.co:5432/postgres");
-                properties.setProperty("hibernate.connection.username", "postgres");
-                properties.setProperty("hibernate.connection.password", "Lychanhyen1");
+                properties.setProperty("hibernate.connection.url", dbUrl);
+                properties.setProperty("hibernate.connection.username", dbUsername);
+                properties.setProperty("hibernate.connection.password", dbPassword);
                 properties.setProperty("hibernate.hbm2ddl.auto", "update");
                 properties.setProperty("hibernate.show_sql", "true");
-                System.out.println("✅ Using fallback properties");
+                properties.setProperty("hibernate.format_sql", "true");
+                properties.setProperty("hibernate.current_session_context_class", "thread");
+                properties.setProperty("hibernate.default_schema", "public");
+                properties.setProperty("hibernate.hikari.minimumIdle", "5");
+                properties.setProperty("hibernate.hikari.maximumPoolSize", "10");
+                properties.setProperty("hibernate.hikari.idleTimeout", "300000");
+                properties.setProperty("hibernate.hikari.connectionTimeout", "30000");
+            } else {
+                // Fallback: load từ file
+                try {
+                    properties.load(HibernateUtil.class.getClassLoader()
+                            .getResourceAsStream("hibernate.properties"));
+                    System.out.println("✅ hibernate.properties loaded successfully");
+                } catch (Exception e) {
+                    System.err.println("❌ Failed to load hibernate.properties: " + e.getMessage());
+                    // Hardcode fallback
+                    properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+                    properties.setProperty("hibernate.connection.driver_class", "org.postgresql.Driver");
+                    properties.setProperty("hibernate.connection.url",
+                            "jdbc:postgresql://db.cahykacskytpfqpshcvi.supabase.co:5432/postgres?ssl=true&sslmode=require");
+                    properties.setProperty("hibernate.connection.username", "postgres");
+                    properties.setProperty("hibernate.connection.password", "Lychanhyen1");
+                    properties.setProperty("hibernate.hbm2ddl.auto", "update");
+                    properties.setProperty("hibernate.show_sql", "true");
+                    System.out.println("✅ Using fallback properties with SSL");
+                }
             }
 
-            // Load PostgreSQL driver
             try {
                 Class.forName("org.postgresql.Driver");
                 System.out.println("✅ PostgreSQL Driver loaded");
@@ -47,7 +70,6 @@ public class HibernateUtil {
             Configuration configuration = new Configuration();
             configuration.setProperties(properties);
 
-            // Add annotated classes
             configuration.addAnnotatedClass(User.class);
             configuration.addAnnotatedClass(Category.class);
             configuration.addAnnotatedClass(Product.class);
@@ -60,7 +82,6 @@ public class HibernateUtil {
 
             SessionFactory factory = configuration.buildSessionFactory(serviceRegistry);
 
-            // Test connection
             factory.openSession().close();
             System.out.println("✅ Connected to Supabase successfully!");
 
