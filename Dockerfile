@@ -9,6 +9,5 @@ FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.war /app/app.war
 COPY --from=build /app/target/dependency/webapp-runner.jar /app/webapp-runner.jar
-RUN ls -la /app/
 EXPOSE 8080
-CMD ["java", "-jar", "webapp-runner.jar", "--port", "8080", "app.war"]
+CMD java -jar webapp-runner.jar --port 8080 app.war
