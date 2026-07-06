@@ -10,9 +10,6 @@
   <version>1.0-SNAPSHOT</version>
   <packaging>war</packaging>
 
-  <name>model_web</name>
-  <description>WebApp bán hàng mẫu - Dễ dàng tùy chỉnh cho khách hàng</description>
-
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>17</maven.compiler.source>
@@ -26,7 +23,7 @@
   </properties>
 
   <dependencies>
-    <!-- Servlet API 4.0 (javax) -->
+    <!-- Servlet API -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -42,11 +39,18 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- JSTL -->
+    <!-- JSTL API -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
       <version>${jstl.version}</version>
+    </dependency>
+
+    <!-- JSTL Implementation -->
+    <dependency>
+      <groupId>taglibs</groupId>
+      <artifactId>standard</artifactId>
+      <version>1.1.2</version>
     </dependency>
 
     <!-- Hibernate Core -->
@@ -85,8 +89,6 @@
 
   <build>
     <finalName>ROOT</finalName>
-
-    <!-- Cấu hình resources để copy file properties -->
     <resources>
       <resource>
         <directory>src/main/resources</directory>
@@ -97,7 +99,6 @@
         <filtering>false</filtering>
       </resource>
     </resources>
-
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -118,7 +119,6 @@
         </configuration>
       </plugin>
 
-      <!-- Plugin để copy resources khi build -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
