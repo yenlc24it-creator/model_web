@@ -1,5 +1,6 @@
 package com.model_web.config;
 
+import com.model_web.model.*;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
@@ -16,26 +17,22 @@ public class HibernateUtil {
             properties.load(HibernateUtil.class.getClassLoader()
                     .getResourceAsStream("hibernate.properties"));
 
-            // Ensure PostgreSQL driver is loaded
             Class.forName("org.postgresql.Driver");
 
             Configuration configuration = new Configuration();
             configuration.setProperties(properties);
 
-            // Add annotated classes
-            configuration.addAnnotatedClass(com.model_web.model.User.class);
-            configuration.addAnnotatedClass(com.model_web.model.Category.class);
-            configuration.addAnnotatedClass(com.model_web.model.Product.class);
-            configuration.addAnnotatedClass(com.model_web.model.Order.class);
-            configuration.addAnnotatedClass(com.model_web.model.OrderDetail.class);
+            configuration.addAnnotatedClass(User.class);
+            configuration.addAnnotatedClass(Category.class);
+            configuration.addAnnotatedClass(Product.class);
+            configuration.addAnnotatedClass(Order.class);
+            configuration.addAnnotatedClass(OrderDetail.class);
 
             ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
                     .applySettings(configuration.getProperties())
                     .build();
 
             SessionFactory factory = configuration.buildSessionFactory(serviceRegistry);
-
-            // Test connection
             factory.openSession().close();
             System.out.println("✅ Connected to Supabase successfully!");
 
@@ -55,7 +52,6 @@ public class HibernateUtil {
     public static void shutdown() {
         if (sessionFactory != null) {
             sessionFactory.close();
-            System.out.println("✅ SessionFactory closed");
         }
     }
 }

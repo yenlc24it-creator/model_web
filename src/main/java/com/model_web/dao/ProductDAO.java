@@ -5,7 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 import com.model_web.config.HibernateUtil;
 import java.math.BigDecimal;
-import java.util.List;  // ← THÊM DÒNG NÀY
+import java.util.List;
 import java.util.Optional;
 
 public class ProductDAO extends BaseDAO<Product> {
@@ -14,7 +14,6 @@ public class ProductDAO extends BaseDAO<Product> {
         super(Product.class);
     }
 
-    // Find by slug
     public Optional<Product> findBySlug(String slug) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "FROM Product WHERE slug = :slug";
@@ -24,7 +23,6 @@ public class ProductDAO extends BaseDAO<Product> {
         }
     }
 
-    // Find active products
     public List<Product> findActiveProducts() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "FROM Product WHERE active = true ORDER BY createdAt DESC";
@@ -33,7 +31,6 @@ public class ProductDAO extends BaseDAO<Product> {
         }
     }
 
-    // Find by category
     public List<Product> findByCategory(Long categoryId) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "FROM Product WHERE category.id = :categoryId AND active = true";
@@ -43,7 +40,6 @@ public class ProductDAO extends BaseDAO<Product> {
         }
     }
 
-    // Find products on sale
     public List<Product> findProductsOnSale() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "FROM Product WHERE active = true AND salePrice IS NOT NULL AND salePrice > 0 AND salePrice < price";
@@ -52,7 +48,6 @@ public class ProductDAO extends BaseDAO<Product> {
         }
     }
 
-    // Search products
     public List<Product> search(String keyword) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "FROM Product WHERE active = true AND (LOWER(name) LIKE :keyword OR LOWER(description) LIKE :keyword)";
@@ -62,7 +57,6 @@ public class ProductDAO extends BaseDAO<Product> {
         }
     }
 
-    // Find products with price range
     public List<Product> findByPriceRange(BigDecimal minPrice, BigDecimal maxPrice) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "FROM Product WHERE active = true AND price BETWEEN :minPrice AND :maxPrice";
@@ -73,7 +67,6 @@ public class ProductDAO extends BaseDAO<Product> {
         }
     }
 
-    // Get newest products
     public List<Product> findNewestProducts(int limit) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "FROM Product WHERE active = true ORDER BY createdAt DESC";
@@ -83,7 +76,6 @@ public class ProductDAO extends BaseDAO<Product> {
         }
     }
 
-    // Get best selling products
     public List<Product> findBestSellingProducts(int limit) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "SELECT p FROM Product p JOIN p.orderDetails od GROUP BY p ORDER BY SUM(od.quantity) DESC";
@@ -93,7 +85,6 @@ public class ProductDAO extends BaseDAO<Product> {
         }
     }
 
-    // Update view count
     public void incrementViewCount(Long productId) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "UPDATE Product SET views = views + 1 WHERE id = :productId";
@@ -105,7 +96,6 @@ public class ProductDAO extends BaseDAO<Product> {
         }
     }
 
-    // Check stock
     public boolean hasStock(Long productId, int quantity) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "SELECT stock FROM Product WHERE id = :productId";
@@ -116,7 +106,6 @@ public class ProductDAO extends BaseDAO<Product> {
         }
     }
 
-    // Reduce stock
     public void reduceStock(Long productId, int quantity) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "UPDATE Product SET stock = stock - :quantity WHERE id = :productId AND stock >= :quantity";

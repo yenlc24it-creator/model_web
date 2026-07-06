@@ -1,6 +1,6 @@
 package com.model_web.model;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
@@ -28,7 +28,6 @@ public class OrderDetail {
     @Column(nullable = false, precision = 15, scale = 2)
     private BigDecimal subtotal;
 
-    // Constructors
     public OrderDetail() {}
 
     public OrderDetail(Product product, int quantity, BigDecimal price) {
@@ -39,53 +38,22 @@ public class OrderDetail {
     }
 
     // Getters and Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public Order getOrder() { return order; }
+    public void setOrder(Order order) { this.order = order; }
+    public Product getProduct() { return product; }
+    public void setProduct(Product product) { this.product = product; }
+    public int getQuantity() { return quantity; }
     public void setQuantity(int quantity) {
         this.quantity = quantity;
         this.subtotal = this.price.multiply(BigDecimal.valueOf(quantity));
     }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
+    public BigDecimal getPrice() { return price; }
     public void setPrice(BigDecimal price) {
         this.price = price;
         this.subtotal = this.price.multiply(BigDecimal.valueOf(quantity));
     }
-
-    public BigDecimal getSubtotal() {
-        return subtotal;
-    }
-
-    public void setSubtotal(BigDecimal subtotal) {
-        this.subtotal = subtotal;
-    }
+    public BigDecimal getSubtotal() { return subtotal; }
+    public void setSubtotal(BigDecimal subtotal) { this.subtotal = subtotal; }
 }

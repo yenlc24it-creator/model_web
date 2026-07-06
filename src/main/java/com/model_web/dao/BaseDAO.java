@@ -1,12 +1,12 @@
 package com.model_web.dao;
 
 import com.model_web.config.HibernateUtil;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +18,6 @@ public abstract class BaseDAO<T> {
         this.entityClass = entityClass;
     }
 
-    // Save or update
     public T save(T entity) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -34,7 +33,6 @@ public abstract class BaseDAO<T> {
         }
     }
 
-    // Update
     public T update(T entity) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -50,7 +48,6 @@ public abstract class BaseDAO<T> {
         }
     }
 
-    // Delete by entity
     public void delete(T entity) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -65,7 +62,6 @@ public abstract class BaseDAO<T> {
         }
     }
 
-    // Delete by id
     public void deleteById(Long id) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -83,7 +79,6 @@ public abstract class BaseDAO<T> {
         }
     }
 
-    // Find by id
     public Optional<T> findById(Long id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             T entity = session.get(entityClass, id);
@@ -91,7 +86,6 @@ public abstract class BaseDAO<T> {
         }
     }
 
-    // Find all
     public List<T> findAll() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             CriteriaBuilder cb = session.getCriteriaBuilder();
@@ -103,7 +97,6 @@ public abstract class BaseDAO<T> {
         }
     }
 
-    // Find all with pagination
     public List<T> findAll(int page, int size) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             CriteriaBuilder cb = session.getCriteriaBuilder();
@@ -117,7 +110,6 @@ public abstract class BaseDAO<T> {
         }
     }
 
-    // Count all
     public long count() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             CriteriaBuilder cb = session.getCriteriaBuilder();
@@ -129,7 +121,6 @@ public abstract class BaseDAO<T> {
         }
     }
 
-    // Execute native query
     @SuppressWarnings("unchecked")
     public List<Object[]> executeNativeQuery(String sql) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {

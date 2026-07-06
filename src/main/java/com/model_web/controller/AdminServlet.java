@@ -2,11 +2,11 @@ package com.model_web.controller;
 
 import com.model_web.dao.*;
 import com.model_web.model.*;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -97,7 +97,6 @@ public class AdminServlet extends HttpServlet {
     private void showDashboard(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // Get statistics
         long totalProducts = productDAO.count();
         long totalUsers = userDAO.count();
         List<Order> allOrders = orderDAO.findAll();
@@ -108,10 +107,9 @@ public class AdminServlet extends HttpServlet {
                 .map(Order::getTotalAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        // Get recent orders (last 10)
         List<Order> recentOrders = allOrders.stream()
                 .limit(10)
-                .toList();
+                .collect(java.util.stream.Collectors.toList());
 
         request.setAttribute("totalProducts", totalProducts);
         request.setAttribute("totalUsers", totalUsers);
@@ -119,7 +117,7 @@ public class AdminServlet extends HttpServlet {
         request.setAttribute("totalRevenue", totalRevenue);
         request.setAttribute("recentOrders", recentOrders);
 
-        request.getRequestDispatcher("/views/admin/dashboard.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/admin/dashboard.jsp").forward(request, response);
     }
 
     private void showProducts(HttpServletRequest request, HttpServletResponse response)
@@ -127,7 +125,7 @@ public class AdminServlet extends HttpServlet {
 
         List<Product> products = productDAO.findAll();
         request.setAttribute("products", products);
-        request.getRequestDispatcher("/views/admin/products.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/admin/products.jsp").forward(request, response);
     }
 
     private void showCategories(HttpServletRequest request, HttpServletResponse response)
@@ -135,7 +133,7 @@ public class AdminServlet extends HttpServlet {
 
         List<Category> categories = categoryDAO.findAll();
         request.setAttribute("categories", categories);
-        request.getRequestDispatcher("/views/admin/categories.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/admin/categories.jsp").forward(request, response);
     }
 
     private void showOrders(HttpServletRequest request, HttpServletResponse response)
@@ -151,7 +149,7 @@ public class AdminServlet extends HttpServlet {
         }
 
         request.setAttribute("orders", orders);
-        request.getRequestDispatcher("/views/admin/orders.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/admin/orders.jsp").forward(request, response);
     }
 
     private void showUsers(HttpServletRequest request, HttpServletResponse response)
@@ -159,7 +157,7 @@ public class AdminServlet extends HttpServlet {
 
         List<User> users = userDAO.findAll();
         request.setAttribute("users", users);
-        request.getRequestDispatcher("/views/admin/users.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/admin/users.jsp").forward(request, response);
     }
 
     private void addProduct(HttpServletRequest request, HttpServletResponse response)

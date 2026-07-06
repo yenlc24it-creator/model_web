@@ -5,7 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 import com.model_web.config.HibernateUtil;
 import java.time.LocalDateTime;
-import java.util.List;  // ← THÊM DÒNG NÀY
+import java.util.List;
 
 public class OrderDAO extends BaseDAO<Order> {
 
@@ -13,7 +13,6 @@ public class OrderDAO extends BaseDAO<Order> {
         super(Order.class);
     }
 
-    // Find orders by user
     public List<Order> findByUser(Long userId) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "FROM Order WHERE user.id = :userId ORDER BY orderDate DESC";
@@ -23,7 +22,6 @@ public class OrderDAO extends BaseDAO<Order> {
         }
     }
 
-    // Find orders by status
     public List<Order> findByStatus(String status) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "FROM Order WHERE status = :status ORDER BY orderDate DESC";
@@ -33,7 +31,6 @@ public class OrderDAO extends BaseDAO<Order> {
         }
     }
 
-    // Find by order code
     public Order findByOrderCode(String orderCode) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "FROM Order WHERE orderCode = :orderCode";
@@ -43,7 +40,6 @@ public class OrderDAO extends BaseDAO<Order> {
         }
     }
 
-    // Update order status
     public void updateStatus(Long orderId, String status) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "UPDATE Order SET status = :status, updatedAt = CURRENT_TIMESTAMP WHERE id = :orderId";
@@ -56,7 +52,6 @@ public class OrderDAO extends BaseDAO<Order> {
         }
     }
 
-    // Get orders by date range
     public List<Order> findOrdersBetween(LocalDateTime start, LocalDateTime end) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "FROM Order WHERE orderDate BETWEEN :start AND :end ORDER BY orderDate DESC";

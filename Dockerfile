@@ -5,9 +5,7 @@ RUN mvn dependency:go-offline
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-FROM eclipse-temurin:17-jre-alpine
-WORKDIR /app
-COPY --from=build /app/target/*.war /app/app.war
-COPY --from=build /app/target/dependency/webapp-runner.jar /app/webapp-runner.jar
+FROM tomcat:9.0-jdk17
+COPY --from=build /app/target/*.war /usr/local/tomcat/webapps/ROOT.war
 EXPOSE 8080
-CMD java -jar webapp-runner.jar --port 8080 app.war
+CMD ["catalina.sh", "run"]

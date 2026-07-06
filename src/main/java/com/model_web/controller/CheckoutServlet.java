@@ -7,12 +7,12 @@ import com.model_web.model.Order;
 import com.model_web.model.OrderDetail;
 import com.model_web.model.Product;
 import com.model_web.model.User;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -49,7 +49,6 @@ public class CheckoutServlet extends HttpServlet {
             return;
         }
 
-        // Pre-fill user info
         if (user != null) {
             request.setAttribute("fullName", user.getFullName());
             request.setAttribute("email", user.getEmail());
@@ -57,7 +56,7 @@ public class CheckoutServlet extends HttpServlet {
             request.setAttribute("address", user.getAddress());
         }
 
-        request.getRequestDispatcher("/views/checkout.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/checkout.jsp").forward(request, response);
     }
 
     @SuppressWarnings("unchecked")
@@ -74,7 +73,6 @@ public class CheckoutServlet extends HttpServlet {
             return;
         }
 
-        // Get form data
         String customerName = request.getParameter("customerName");
         String email = request.getParameter("email");
         String phone = request.getParameter("phone");
@@ -82,16 +80,14 @@ public class CheckoutServlet extends HttpServlet {
         String note = request.getParameter("note");
         String paymentMethod = request.getParameter("paymentMethod");
 
-        // Validation
         if (customerName == null || customerName.isEmpty() ||
                 email == null || email.isEmpty() ||
                 address == null || address.isEmpty()) {
             request.setAttribute("error", "Vui lòng nhập đầy đủ thông tin!");
-            request.getRequestDispatcher("/views/checkout.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/checkout.jsp").forward(request, response);
             return;
         }
 
-        // Create order
         Order order = new Order();
         order.setOrderCode(generateOrderCode());
         order.setCustomerName(customerName);
@@ -108,7 +104,6 @@ public class CheckoutServlet extends HttpServlet {
             order.setUser(user);
         }
 
-        // Add order details
         BigDecimal total = BigDecimal.ZERO;
         for (Map.Entry<Long, Integer> entry : cart.entrySet()) {
             Optional<Product> productOpt = productDAO.findById(entry.getKey());
@@ -121,25 +116,19 @@ public class CheckoutServlet extends HttpServlet {
                 order.addOrderDetail(detail);
 
                 total = total.add(price.multiply(BigDecimal.valueOf(quantity)));
-
-                // Reduce stock
                 productDAO.reduceStock(product.getId(), quantity);
             }
         }
 
         order.setTotalAmount(total);
-
-        // Save order
         orderDAO.save(order);
 
-        // Clear cart
         cart.clear();
         session.setAttribute("cart", cart);
 
-        // Redirect to order confirmation
         request.setAttribute("orderCode", order.getOrderCode());
         request.setAttribute("order", order);
-        request.getRequestDispatcher("/views/order-confirmation.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/order-confirmation.jsp").forward(request, response);
     }
 
     private String generateOrderCode() {

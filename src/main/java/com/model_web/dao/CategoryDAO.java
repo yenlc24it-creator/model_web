@@ -4,7 +4,7 @@ import com.model_web.model.Category;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import com.model_web.config.HibernateUtil;
-import java.util.List;  // ← THÊM DÒNG NÀY
+import java.util.List;
 import java.util.Optional;
 
 public class CategoryDAO extends BaseDAO<Category> {
@@ -13,7 +13,6 @@ public class CategoryDAO extends BaseDAO<Category> {
         super(Category.class);
     }
 
-    // Find by name
     public Optional<Category> findByName(String name) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "FROM Category WHERE name = :name";
@@ -23,7 +22,6 @@ public class CategoryDAO extends BaseDAO<Category> {
         }
     }
 
-    // Find by slug
     public Optional<Category> findBySlug(String slug) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "FROM Category WHERE slug = :slug";
@@ -33,7 +31,6 @@ public class CategoryDAO extends BaseDAO<Category> {
         }
     }
 
-    // Find active categories
     public List<Category> findActiveCategories() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "FROM Category WHERE active = true ORDER BY displayOrder ASC";
@@ -42,7 +39,6 @@ public class CategoryDAO extends BaseDAO<Category> {
         }
     }
 
-    // Find categories with products
     public List<Category> findCategoriesWithProducts() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "SELECT DISTINCT c FROM Category c JOIN c.products p WHERE p.active = true ORDER BY c.displayOrder ASC";

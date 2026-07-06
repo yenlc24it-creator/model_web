@@ -4,7 +4,7 @@ import com.model_web.model.User;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import com.model_web.config.HibernateUtil;
-import java.util.List;  // ← THÊM DÒNG NÀY
+import java.util.List;
 import java.util.Optional;
 
 public class UserDAO extends BaseDAO<User> {
@@ -13,7 +13,6 @@ public class UserDAO extends BaseDAO<User> {
         super(User.class);
     }
 
-    // Find by username
     public Optional<User> findByUsername(String username) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "FROM User WHERE username = :username";
@@ -23,7 +22,6 @@ public class UserDAO extends BaseDAO<User> {
         }
     }
 
-    // Find by email
     public Optional<User> findByEmail(String email) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "FROM User WHERE email = :email";
@@ -33,7 +31,6 @@ public class UserDAO extends BaseDAO<User> {
         }
     }
 
-    // Check if username exists
     public boolean existsByUsername(String username) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "SELECT COUNT(*) FROM User WHERE username = :username";
@@ -43,7 +40,6 @@ public class UserDAO extends BaseDAO<User> {
         }
     }
 
-    // Check if email exists
     public boolean existsByEmail(String email) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "SELECT COUNT(*) FROM User WHERE email = :email";
@@ -53,7 +49,6 @@ public class UserDAO extends BaseDAO<User> {
         }
     }
 
-    // Find active users
     public List<User> findActiveUsers() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "FROM User WHERE active = true";
@@ -62,7 +57,6 @@ public class UserDAO extends BaseDAO<User> {
         }
     }
 
-    // Find by role
     public List<User> findByRole(String role) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "FROM User WHERE role = :role";

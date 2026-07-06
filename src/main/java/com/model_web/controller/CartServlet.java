@@ -2,12 +2,12 @@ package com.model_web.controller;
 
 import com.model_web.dao.ProductDAO;
 import com.model_web.model.Product;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -37,7 +37,6 @@ public class CartServlet extends HttpServlet {
             session.setAttribute("cart", cart);
         }
 
-        // Calculate total
         BigDecimal total = BigDecimal.ZERO;
         Map<Product, Integer> cartItems = new HashMap<>();
 
@@ -52,7 +51,7 @@ public class CartServlet extends HttpServlet {
 
         request.setAttribute("cartItems", cartItems);
         request.setAttribute("total", total);
-        request.getRequestDispatcher("/views/cart.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/cart.jsp").forward(request, response);
     }
 
     @SuppressWarnings("unchecked")
@@ -84,7 +83,6 @@ public class CartServlet extends HttpServlet {
                 break;
         }
 
-        // Redirect back to cart page
         response.sendRedirect(request.getContextPath() + "/cart");
     }
 
@@ -92,7 +90,6 @@ public class CartServlet extends HttpServlet {
         Long productId = Long.parseLong(request.getParameter("productId"));
         int quantity = Integer.parseInt(request.getParameter("quantity"));
 
-        // Check stock
         if (!productDAO.hasStock(productId, quantity)) {
             request.setAttribute("error", "Sản phẩm không đủ số lượng trong kho!");
             return;
@@ -108,7 +105,6 @@ public class CartServlet extends HttpServlet {
         if (quantity <= 0) {
             cart.remove(productId);
         } else {
-            // Check stock
             if (!productDAO.hasStock(productId, quantity)) {
                 request.setAttribute("error", "Sản phẩm không đủ số lượng trong kho!");
                 return;

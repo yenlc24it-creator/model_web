@@ -4,11 +4,11 @@ import com.model_web.dao.ProductDAO;
 import com.model_web.dao.CategoryDAO;
 import com.model_web.model.Product;
 import com.model_web.model.Category;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -32,11 +32,9 @@ public class ProductServlet extends HttpServlet {
         String pathInfo = request.getPathInfo();
 
         if (pathInfo == null || pathInfo.equals("/")) {
-            // Show product list
             showProductList(request, response);
         } else {
-            // Show product detail
-            String slug = pathInfo.substring(1); // Remove leading slash
+            String slug = pathInfo.substring(1);
             showProductDetail(request, response, slug);
         }
     }
@@ -61,7 +59,7 @@ public class ProductServlet extends HttpServlet {
 
         request.setAttribute("products", products);
         request.setAttribute("categories", categories);
-        request.getRequestDispatcher("/views/products.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/products.jsp").forward(request, response);
     }
 
     private void showProductDetail(HttpServletRequest request, HttpServletResponse response, String slug)
@@ -75,23 +73,19 @@ public class ProductServlet extends HttpServlet {
         }
 
         Product product = productOpt.get();
-
-        // Increment view count
         productDAO.incrementViewCount(product.getId());
 
-        // Get related products (same category)
         List<Product> relatedProducts = productDAO.findByCategory(product.getCategory().getId());
         relatedProducts.removeIf(p -> p.getId().equals(product.getId()));
         if (relatedProducts.size() > 4) {
             relatedProducts = relatedProducts.subList(0, 4);
         }
 
-        // Get categories for menu
         List<Category> categories = categoryDAO.findActiveCategories();
 
         request.setAttribute("product", product);
         request.setAttribute("relatedProducts", relatedProducts);
         request.setAttribute("categories", categories);
-        request.getRequestDispatcher("/views/detail.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/detail.jsp").forward(request, response);
     }
 }
