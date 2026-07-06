@@ -22,7 +22,7 @@ public abstract class BaseDAO<T> {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            session.persist(entity);
+            session.save(entity);
             transaction.commit();
             return entity;
         } catch (Exception e) {
@@ -37,9 +37,9 @@ public abstract class BaseDAO<T> {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            T merged = session.merge(entity);
+            session.update(entity);
             transaction.commit();
-            return merged;
+            return entity;
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -52,7 +52,7 @@ public abstract class BaseDAO<T> {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            session.remove(entity);
+            session.delete(entity);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -68,7 +68,7 @@ public abstract class BaseDAO<T> {
             transaction = session.beginTransaction();
             T entity = session.get(entityClass, id);
             if (entity != null) {
-                session.remove(entity);
+                session.delete(entity);
             }
             transaction.commit();
         } catch (Exception e) {
@@ -124,7 +124,7 @@ public abstract class BaseDAO<T> {
     @SuppressWarnings("unchecked")
     public List<Object[]> executeNativeQuery(String sql) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<Object[]> query = session.createNativeQuery(sql, Object[].class);
+            Query<Object[]> query = session.createNativeQuery(sql);
             return query.getResultList();
         }
     }
