@@ -10,6 +10,9 @@
   <version>1.0-SNAPSHOT</version>
   <packaging>war</packaging>
 
+  <name>model_web</name>
+  <description>WebApp bán hàng mẫu - Dễ dàng tùy chỉnh cho khách hàng</description>
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>17</maven.compiler.source>
@@ -39,14 +42,14 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- JSTL API -->
+    <!-- JSTL -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>jstl</artifactId>
       <version>${jstl.version}</version>
     </dependency>
 
-    <!-- JSTL Implementation -->
+    <!-- Standard Taglib -->
     <dependency>
       <groupId>taglibs</groupId>
       <artifactId>standard</artifactId>
@@ -89,6 +92,8 @@
 
   <build>
     <finalName>ROOT</finalName>
+
+    <!-- Copy resources -->
     <resources>
       <resource>
         <directory>src/main/resources</directory>
@@ -99,7 +104,9 @@
         <filtering>false</filtering>
       </resource>
     </resources>
+
     <plugins>
+      <!-- Compiler Plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -110,15 +117,23 @@
         </configuration>
       </plugin>
 
+      <!-- WAR Plugin - Đảm bảo copy đúng cấu trúc -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <version>3.4.0</version>
         <configuration>
           <failOnMissingWebXml>false</failOnMissingWebXml>
+          <webResources>
+            <resource>
+              <directory>src/main/webapp</directory>
+              <filtering>false</filtering>
+            </resource>
+          </webResources>
         </configuration>
       </plugin>
 
+      <!-- Resources Plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
