@@ -4,7 +4,7 @@ import com.model_web.model.Category;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import com.model_web.config.HibernateUtil;
-import java.util.List;
+import java.util.List;  // ← THÊM DÒNG NÀY
 import java.util.Optional;
 
 public class CategoryDAO extends BaseDAO<Category> {

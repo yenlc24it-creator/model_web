@@ -5,7 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.query.Query;
 import com.model_web.config.HibernateUtil;
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.List;  // ← THÊM DÒNG NÀY
 import java.util.Optional;
 
 public class ProductDAO extends BaseDAO<Product> {
