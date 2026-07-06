@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
+// Xóa dòng @WebFilter - Đã cấu hình trong web.xml
 public class AdminFilter implements Filter {
 
     @Override

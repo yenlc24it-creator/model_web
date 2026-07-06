@@ -8,7 +8,6 @@
 
   <display-name>Model Web App</display-name>
 
-  <!-- Absolute ordering để tránh xung đột JAR -->
   <absolute-ordering>
     <name>webapp_runner</name>
   </absolute-ordering>
@@ -107,18 +106,15 @@
     <url-pattern>/admin/*</url-pattern>
   </servlet-mapping>
 
-  <!-- Welcome Page -->
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
     <welcome-file>home</welcome-file>
   </welcome-file-list>
 
-  <!-- Session timeout (30 minutes) -->
   <session-config>
     <session-timeout>30</session-timeout>
   </session-config>
 
-  <!-- Error pages -->
   <error-page>
     <error-code>404</error-code>
     <location>/views/error.jsp</location>
