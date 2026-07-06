@@ -31,11 +31,6 @@ public class HomeServlet extends HttpServlet {
         try {
             String category = request.getParameter("category");
             String keyword = request.getParameter("keyword");
-            String pageStr = request.getParameter("page");
-            String sizeStr = request.getParameter("size");
-
-            int page = pageStr != null ? Integer.parseInt(pageStr) : 0;
-            int size = sizeStr != null ? Integer.parseInt(sizeStr) : 12;
 
             // Get categories for menu
             List<Category> categories = categoryDAO.findActiveCategories();
@@ -43,25 +38,18 @@ public class HomeServlet extends HttpServlet {
 
             // Get products
             List<Product> products;
-            long totalProducts;
 
             if (category != null && !category.isEmpty()) {
                 products = productDAO.findByCategory(Long.parseLong(category));
-                totalProducts = products.size();
             } else if (keyword != null && !keyword.isEmpty()) {
                 products = productDAO.search(keyword);
-                totalProducts = products.size();
             } else {
-                products = productDAO.findAll(page, size);
-                totalProducts = productDAO.count();
+                products = productDAO.findActiveProducts();
             }
 
             request.setAttribute("products", products);
-            request.setAttribute("totalProducts", totalProducts);
-            request.setAttribute("currentPage", page);
-            request.setAttribute("pageSize", size);
-            request.setAttribute("totalPages", (int) Math.ceil((double) totalProducts / size));
 
+            // Forward to home page
             request.getRequestDispatcher("/WEB-INF/views/home.jsp").forward(request, response);
 
         } catch (Exception e) {
