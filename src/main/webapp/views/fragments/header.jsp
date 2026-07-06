@@ -1,0 +1,246 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<%
+    String contextPath = request.getContextPath();
+    request.setAttribute("contextPath", contextPath);
+%>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="${pageDescription != null ? pageDescription : 'WebApp bán hàng mẫu - Nền tảng thương mại điện tử chuyên nghiệp'}">
+    <meta name="keywords" content="bán hàng, web bán hàng, mẫu web bán hàng, ecommerce">
+    <meta name="author" content="Model Web">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="${pageTitle != null ? pageTitle : 'Model Web - Bán hàng trực tuyến'}">
+    <meta property="og:description" content="${pageDescription != null ? pageDescription : 'WebApp bán hàng mẫu chuyên nghiệp'}">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="${pageContext.request.requestURL}">
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "Model Web",
+            "url": "${pageContext.request.requestURL}",
+        "description": "WebApp bán hàng mẫu chuyên nghiệp",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "${contextPath}/home?keyword={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+
+    <title>${pageTitle != null ? pageTitle : 'Model Web - Bán hàng trực tuyến'}</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome 6 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="${contextPath}/assets/css/style.css" rel="stylesheet">
+
+    <style>
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .hero-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 60px 0;
+            color: white;
+            margin-bottom: 30px;
+        }
+        .product-card {
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        .product-price {
+            color: #e74c3c;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .product-sale-price {
+            color: #999;
+            text-decoration: line-through;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 10px;
+        }
+        .nav-link {
+            position: relative;
+        }
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+        .footer a {
+            color: #ecf0f1;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            color: #3498db;
+        }
+        .sale-tag {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .admin-sidebar {
+            background: #2c3e50;
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+        .admin-sidebar .nav-link {
+            color: #ecf0f1;
+        }
+        .admin-sidebar .nav-link:hover {
+            background: #34495e;
+        }
+        .admin-sidebar .nav-link.active {
+            background: #3498db;
+        }
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="${contextPath}/home">
+            <i class="fas fa-store"></i> GUNDAM HUB
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link ${pageContext.request.servletPath == '/views/home.jsp' ? 'active' : ''}"
+                       href="${contextPath}/home">
+                        <i class="fas fa-home"></i> Trang chủ
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="${contextPath}/product">
+                        <i class="fas fa-box"></i> Sản phẩm
+                    </a>
+                </li>
+                <c:if test="${not empty sessionScope.user && sessionScope.role == 'ADMIN'}">
+                    <li class="nav-item">
+                        <a class="nav-link" href="${contextPath}/admin">
+                            <i class="fas fa-user-shield"></i> Quản trị
+                        </a>
+                    </li>
+                </c:if>
+            </ul>
+
+            <!-- Search Form -->
+            <form class="d-flex me-3" action="${contextPath}/home" method="get">
+                <input class="form-control form-control-sm me-2" type="search" name="keyword"
+                       placeholder="Tìm kiếm..." aria-label="Search">
+                <button class="btn btn-outline-light btn-sm" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link position-relative" href="${contextPath}/cart">
+                        <i class="fas fa-shopping-cart"></i> Giỏ hàng
+                        <c:if test="${not empty sessionScope.cart}">
+                            <span class="cart-badge">${sessionScope.cart.size()}</span>
+                        </c:if>
+                    </a>
+                </li>
+                <c:choose>
+                    <c:when test="${not empty sessionScope.user}">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user"></i> ${sessionScope.fullName}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-user-circle"></i> Thông tin</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-list"></i> Đơn hàng</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="${contextPath}/logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
+                            </ul>
+                        </li>
+                    </c:when>
+                    <c:otherwise>
+                        <li class="nav-item">
+                            <a class="nav-link" href="${contextPath}/login">
+                                <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="${contextPath}/register">
+                                <i class="fas fa-user-plus"></i> Đăng ký
+                            </a>
+                        </li>
+                    </c:otherwise>
+                </c:choose>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Toast Container for messages -->
+<div class="toast-container">
+    <c:if test="${not empty error}">
+        <div class="toast show align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-exclamation-circle"></i> ${error}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </c:if>
+    <c:if test="${not empty success}">
+        <div class="toast show align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-check-circle"></i> ${success}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </c:if>
+</div>

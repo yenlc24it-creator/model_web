@@ -1,0 +1,11 @@
+services:
+- type: web
+name: model-web
+env: java
+buildCommand: mvn clean package
+startCommand: java -jar target/dependency/webapp-runner.jar --port target/*.war
+envVars:
+- key: JAVA_VERSION
+value: 17
+- key: PORT
+value: 8080
