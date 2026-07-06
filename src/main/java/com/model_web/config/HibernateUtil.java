@@ -13,15 +13,41 @@ public class HibernateUtil {
 
     private static SessionFactory buildSessionFactory() {
         try {
-            Properties properties = new Properties();
-            properties.load(HibernateUtil.class.getClassLoader()
-                    .getResourceAsStream("hibernate.properties"));
+            System.out.println("🔧 Initializing Hibernate...");
 
-            Class.forName("org.postgresql.Driver");
+            // Load properties from file
+            Properties properties = new Properties();
+            try {
+                properties.load(HibernateUtil.class.getClassLoader()
+                        .getResourceAsStream("hibernate.properties"));
+                System.out.println("✅ hibernate.properties loaded successfully");
+            } catch (Exception e) {
+                System.err.println("❌ Failed to load hibernate.properties: " + e.getMessage());
+                // Fallback: set properties directly
+                properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
+                properties.setProperty("hibernate.connection.driver_class", "org.postgresql.Driver");
+                properties.setProperty("hibernate.connection.url",
+                        "jdbc:postgresql://db.cahykacskytpfqpshcvi.supabase.co:5432/postgres");
+                properties.setProperty("hibernate.connection.username", "postgres");
+                properties.setProperty("hibernate.connection.password", "Lychanhyen1");
+                properties.setProperty("hibernate.hbm2ddl.auto", "update");
+                properties.setProperty("hibernate.show_sql", "true");
+                System.out.println("✅ Using fallback properties");
+            }
+
+            // Load PostgreSQL driver
+            try {
+                Class.forName("org.postgresql.Driver");
+                System.out.println("✅ PostgreSQL Driver loaded");
+            } catch (ClassNotFoundException e) {
+                System.err.println("❌ PostgreSQL Driver not found!");
+                throw e;
+            }
 
             Configuration configuration = new Configuration();
             configuration.setProperties(properties);
 
+            // Add annotated classes
             configuration.addAnnotatedClass(User.class);
             configuration.addAnnotatedClass(Category.class);
             configuration.addAnnotatedClass(Product.class);
@@ -33,6 +59,8 @@ public class HibernateUtil {
                     .build();
 
             SessionFactory factory = configuration.buildSessionFactory(serviceRegistry);
+
+            // Test connection
             factory.openSession().close();
             System.out.println("✅ Connected to Supabase successfully!");
 
@@ -52,6 +80,7 @@ public class HibernateUtil {
     public static void shutdown() {
         if (sessionFactory != null) {
             sessionFactory.close();
+            System.out.println("✅ SessionFactory closed");
         }
     }
 }
