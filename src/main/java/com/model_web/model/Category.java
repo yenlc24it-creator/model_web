@@ -12,19 +12,19 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(name = "name", nullable = false, unique = true, length = 50)
     private String name;
 
-    @Column(length = 255)
+    @Column(name = "description", length = 255)
     private String description;
 
-    @Column(length = 100)
+    @Column(name = "slug", length = 100)
     private String slug;
 
     @Column(name = "display_order")
     private int displayOrder = 0;
 
-    @Column(nullable = false)
+    @Column(name = "active", nullable = false)
     private boolean active = true;
 
     @OneToMany(mappedBy = "category")

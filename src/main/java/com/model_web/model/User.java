@@ -13,28 +13,28 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(name = "username", nullable = false, unique = true, length = 50)
     private String username;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(name = "email", nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(nullable = false)
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(length = 100)
+    @Column(name = "full_name", length = 100)
     private String fullName;
 
-    @Column(length = 20)
+    @Column(name = "phone", length = 20)
     private String phone;
 
-    @Column(length = 255)
+    @Column(name = "address", length = 255)
     private String address;
 
-    @Column(nullable = false)
+    @Column(name = "role", nullable = false)
     private String role = "USER";
 
-    @Column(nullable = false)
+    @Column(name = "active", nullable = false)
     private boolean active = true;
 
     @Column(name = "created_at")

@@ -14,33 +14,34 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 200)
+    @Column(name = "name", nullable = false, length = 200)
     private String name;
 
-    @Column(length = 100)
+    @Column(name = "slug", length = 100)
     private String slug;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(nullable = false, precision = 15, scale = 2)
+    @Column(name = "price", nullable = false, precision = 15, scale = 2)
     private BigDecimal price;
 
     @Column(name = "sale_price", precision = 15, scale = 2)
     private BigDecimal salePrice;
 
-    @Column(nullable = false)
+    @Column(name = "stock", nullable = false)
     private int stock = 0;
 
-    @Column(length = 255)
+    @Column(name = "image_url", length = 255)
     private String imageUrl;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "images", columnDefinition = "TEXT")
     private String images;
 
-    @Column(nullable = false)
+    @Column(name = "active", nullable = false)
     private boolean active = true;
 
+    @Column(name = "views")
     private int views = 0;
 
     @Column(name = "created_at")

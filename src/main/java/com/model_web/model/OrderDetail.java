@@ -19,13 +19,13 @@ public class OrderDetail {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @Column(nullable = false)
+    @Column(name = "quantity", nullable = false)
     private int quantity;
 
-    @Column(nullable = false, precision = 15, scale = 2)
+    @Column(name = "price", nullable = false, precision = 15, scale = 2)
     private BigDecimal price;
 
-    @Column(nullable = false, precision = 15, scale = 2)
+    @Column(name = "subtotal", nullable = false, precision = 15, scale = 2)
     private BigDecimal subtotal;
 
     public OrderDetail() {}
