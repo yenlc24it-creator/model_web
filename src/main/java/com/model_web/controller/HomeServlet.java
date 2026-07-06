@@ -37,9 +37,11 @@ public class HomeServlet extends HttpServlet {
             int page = pageStr != null ? Integer.parseInt(pageStr) : 0;
             int size = sizeStr != null ? Integer.parseInt(sizeStr) : 12;
 
+            // Get categories for menu
             List<Category> categories = categoryDAO.findActiveCategories();
             request.setAttribute("categories", categories);
 
+            // Get products
             List<Product> products;
             long totalProducts;
 

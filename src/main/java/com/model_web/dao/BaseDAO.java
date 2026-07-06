@@ -4,9 +4,6 @@ import com.model_web.config.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,13 +15,12 @@ public abstract class BaseDAO<T> {
         this.entityClass = entityClass;
     }
 
-    public T save(T entity) {
+    public void save(T entity) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             session.save(entity);
             transaction.commit();
-            return entity;
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -33,13 +29,12 @@ public abstract class BaseDAO<T> {
         }
     }
 
-    public T update(T entity) {
+    public void update(T entity) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             session.update(entity);
             transaction.commit();
-            return entity;
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
@@ -88,22 +83,16 @@ public abstract class BaseDAO<T> {
 
     public List<T> findAll() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            CriteriaBuilder cb = session.getCriteriaBuilder();
-            CriteriaQuery<T> cq = cb.createQuery(entityClass);
-            Root<T> root = cq.from(entityClass);
-            cq.select(root);
-            Query<T> query = session.createQuery(cq);
+            String hql = "FROM " + entityClass.getSimpleName();
+            Query<T> query = session.createQuery(hql, entityClass);
             return query.getResultList();
         }
     }
 
     public List<T> findAll(int page, int size) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            CriteriaBuilder cb = session.getCriteriaBuilder();
-            CriteriaQuery<T> cq = cb.createQuery(entityClass);
-            Root<T> root = cq.from(entityClass);
-            cq.select(root);
-            Query<T> query = session.createQuery(cq);
+            String hql = "FROM " + entityClass.getSimpleName();
+            Query<T> query = session.createQuery(hql, entityClass);
             query.setFirstResult(page * size);
             query.setMaxResults(size);
             return query.getResultList();
@@ -112,11 +101,8 @@ public abstract class BaseDAO<T> {
 
     public long count() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            CriteriaBuilder cb = session.getCriteriaBuilder();
-            CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-            Root<T> root = cq.from(entityClass);
-            cq.select(cb.count(root));
-            Query<Long> query = session.createQuery(cq);
+            String hql = "SELECT COUNT(*) FROM " + entityClass.getSimpleName();
+            Query<Long> query = session.createQuery(hql, Long.class);
             return query.getSingleResult();
         }
     }
