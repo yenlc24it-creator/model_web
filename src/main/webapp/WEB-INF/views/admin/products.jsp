@@ -122,6 +122,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <form action="${contextPath}/admin/product/add" method="post">
+                <input type="hidden" name="imageUrl" id="add-imageUrl">
                 <div class="modal-header">
                     <h5 class="modal-title">Thêm sản phẩm</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -166,8 +167,11 @@
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Hình ảnh URL</label>
-                            <input type="text" name="imageUrl" class="form-control">
+                            <label class="form-label">Hình ảnh</label>
+                            <input type="file" class="form-control" accept="image/*" onchange="uploadImage(this, 'add-imageUrl', 'add-preview')">
+                            <div id="add-preview" class="mt-2" style="display:none;">
+                                <img src="" style="max-width: 150px; max-height: 150px; object-fit: cover;" class="img-thumbnail">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -186,6 +190,7 @@
         <div class="modal-content">
             <form action="${contextPath}/admin/product/update" method="post">
                 <input type="hidden" name="id" id="edit-id">
+                <input type="hidden" name="imageUrl" id="edit-imageUrl">
                 <div class="modal-header">
                     <h5 class="modal-title">Sửa sản phẩm</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -230,8 +235,11 @@
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Hình ảnh URL</label>
-                            <input type="text" name="imageUrl" id="edit-imageUrl" class="form-control">
+                            <label class="form-label">Hình ảnh</label>
+                            <input type="file" class="form-control" accept="image/*" onchange="uploadImage(this, 'edit-imageUrl', 'edit-preview')">
+                            <div id="edit-preview" class="mt-2">
+                                <img id="edit-preview-img" src="" style="max-width: 150px; max-height: 150px; object-fit: cover; display:none;" class="img-thumbnail">
+                            </div>
                         </div>
                     </div>
                     <div class="mb-3">
@@ -285,12 +293,64 @@
         document.getElementById('edit-categoryId').value = categoryId;
         document.getElementById('edit-imageUrl').value = imageUrl;
         document.getElementById('edit-active').checked = active;
+        var preview = document.getElementById('edit-preview-img');
+        if (imageUrl) {
+            preview.src = imageUrl;
+            preview.style.display = 'block';
+        } else {
+            preview.style.display = 'none';
+        }
         new bootstrap.Modal(document.getElementById('editProductModal')).show();
     }
 
     function deleteProduct(id) {
         document.getElementById('delete-id').value = id;
         new bootstrap.Modal(document.getElementById('deleteProductModal')).show();
+    }
+
+    function uploadImage(input, hiddenId, previewId) {
+        var file = input.files[0];
+        if (!file) return;
+
+        var previewDiv = document.getElementById(previewId);
+        var previewImg = previewDiv.querySelector('img');
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            previewDiv.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+
+        var formData = new FormData();
+        formData.append('file', file);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '${contextPath}/admin/upload', true);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                try {
+                    var resp = JSON.parse(xhr.responseText);
+                    if (resp.success) {
+                        document.getElementById(hiddenId).value = resp.url;
+                    } else {
+                        alert('Upload thất bại: ' + (resp.error || 'Lỗi không xác định'));
+                    }
+                } catch (e) {
+                    alert('Lỗi xử lý phản hồi upload');
+                }
+            } else {
+                try {
+                    var resp = JSON.parse(xhr.responseText);
+                    alert('Upload thất bại: ' + (resp.error || 'Lỗi không xác định'));
+                } catch (e) {
+                    alert('Upload thất bại (HTTP ' + xhr.status + ')');
+                }
+            }
+        };
+        xhr.onerror = function() {
+            alert('Không thể kết nối đến máy chủ');
+        };
+        xhr.send(formData);
     }
 </script>
 </body>

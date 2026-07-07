@@ -2,6 +2,7 @@ package com.model_web.controller;
 
 import com.model_web.dao.*;
 import com.model_web.model.*;
+import com.model_web.util.StorageUtil;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -251,7 +252,14 @@ public class AdminServlet extends HttpServlet {
             throws IOException {
 
         Long id = Long.parseLong(request.getParameter("id"));
-        productDAO.deleteById(id);
+        Product product = productDAO.findById(id).orElse(null);
+        if (product != null) {
+            String imageUrl = product.getImageUrl();
+            productDAO.deleteById(id);
+            if (imageUrl != null && !imageUrl.isEmpty()) {
+                StorageUtil.deleteFile(imageUrl);
+            }
+        }
         response.sendRedirect(request.getContextPath() + "/admin/products");
     }
 
