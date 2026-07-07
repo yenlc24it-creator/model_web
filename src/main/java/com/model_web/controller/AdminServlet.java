@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @WebServlet(name = "AdminServlet", urlPatterns = {"/admin", "/admin/*"})
 public class AdminServlet extends HttpServlet {
@@ -109,7 +110,7 @@ public class AdminServlet extends HttpServlet {
 
         List<Order> recentOrders = allOrders.stream()
                 .limit(10)
-                .collect(java.util.stream.Collectors.toList());
+                .collect(Collectors.toList());
 
         request.setAttribute("totalProducts", totalProducts);
         request.setAttribute("totalUsers", totalUsers);
