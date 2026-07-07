@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%
     String contextPath = request.getContextPath();
     request.setAttribute("contextPath", contextPath);
@@ -91,7 +92,7 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm btn-warning" onclick="editCategory(${category.id}, '${category.name}', '${category.slug}', '${category.description != null ? category.description : ''}', ${category.active})">
+                                        <button class="btn btn-sm btn-warning" onclick='editCategory(${category.id}, "${fn:replace(category.name, '"', '\\"')}", "${fn:replace(category.slug, '"', '\\"')}", "${fn:replace(category.description, '"', '\\"')}", ${category.active})'>
                                             <i class="fas fa-edit"></i>
                                         </button>
                                         <button class="btn btn-sm btn-danger" onclick="deleteCategory(${category.id})">

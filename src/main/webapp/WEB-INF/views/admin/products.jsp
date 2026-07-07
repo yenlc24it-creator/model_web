@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%
     String contextPath = request.getContextPath();
     request.setAttribute("contextPath", contextPath);
@@ -99,7 +100,7 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm btn-warning" onclick="editProduct(${product.id}, '${product.name}', '${product.slug}', '${product.description}', ${product.price}, ${product.salePrice != null ? product.salePrice : ''}, ${product.stock}, ${product.category.id}, '${product.imageUrl}', ${product.active})">
+                                        <button class="btn btn-sm btn-warning" onclick='editProduct(${product.id}, "${fn:replace(product.name, '"', '\\"')}", "${fn:replace(product.slug, '"', '\\"')}", "${fn:replace(product.description, '"', '\\"')}", ${product.price}, ${product.salePrice != null ? product.salePrice : ''}, ${product.stock}, ${product.category.id}, "${fn:replace(product.imageUrl, '"', '\\"')}", ${product.active})'>
                                             <i class="fas fa-edit"></i>
                                         </button>
                                         <button class="btn btn-sm btn-danger" onclick="deleteProduct(${product.id})">

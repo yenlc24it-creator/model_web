@@ -13,6 +13,15 @@ public class CategoryDAO extends BaseDAO<Category> {
         super(Category.class);
     }
 
+    @Override
+    public List<Category> findAll() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            String hql = "SELECT DISTINCT c FROM Category c LEFT JOIN FETCH c.products ORDER BY c.displayOrder ASC";
+            Query<Category> query = session.createQuery(hql, Category.class);
+            return query.getResultList();
+        }
+    }
+
     public Optional<Category> findByName(String name) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "FROM Category WHERE name = :name";
