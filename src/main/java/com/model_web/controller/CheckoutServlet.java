@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -55,6 +56,19 @@ public class CheckoutServlet extends HttpServlet {
             request.setAttribute("phone", user.getPhone());
             request.setAttribute("address", user.getAddress());
         }
+
+        BigDecimal total = BigDecimal.ZERO;
+        Map<Product, Integer> cartItems = new LinkedHashMap<>();
+        for (Map.Entry<Long, Integer> entry : cart.entrySet()) {
+            Optional<Product> productOpt = productDAO.findById(entry.getKey());
+            if (productOpt.isPresent()) {
+                Product product = productOpt.get();
+                cartItems.put(product, entry.getValue());
+                total = total.add(product.getFinalPrice().multiply(BigDecimal.valueOf(entry.getValue())));
+            }
+        }
+        request.setAttribute("cartItems", cartItems);
+        request.setAttribute("total", total);
 
         request.getRequestDispatcher("/WEB-INF/views/checkout.jsp").forward(request, response);
     }

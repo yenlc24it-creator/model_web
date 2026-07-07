@@ -10,6 +10,13 @@
 <div class="container py-4">
   <h2 class="mb-4"><i class="fas fa-credit-card"></i> Thanh toán</h2>
 
+  <c:if test="${not empty error}">
+    <div class="alert alert-danger alert-dismissible fade show">
+      <i class="fas fa-exclamation-circle"></i> ${error}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  </c:if>
+
   <div class="row">
     <div class="col-lg-8">
       <div class="card shadow-sm">
@@ -75,21 +82,17 @@
         <div class="card-body">
           <h5 class="card-title">Tổng đơn hàng</h5>
           <hr>
-          <c:set var="subtotal" value="0" />
-          <c:forEach items="${sessionScope.cart}" var="entry">
-            <c:set var="subtotal" value="${subtotal + (entry.value)}" />
+          <c:forEach items="${cartItems}" var="entry">
+            <div class="d-flex justify-content-between mb-1 small">
+              <span>${entry.key.name} x ${entry.value}</span>
+              <span><fmt:formatNumber value="${entry.key.finalPrice * entry.value}" type="currency" currencySymbol="₫"/></span>
+            </div>
           </c:forEach>
-
-          <div class="d-flex justify-content-between mb-2">
-            <span>Số lượng sản phẩm:</span>
-            <span>${sessionScope.cart.size()}</span>
-          </div>
-
+          <hr>
           <div class="d-flex justify-content-between mb-2">
             <span>Phí vận chuyển:</span>
             <span class="text-success">Miễn phí</span>
           </div>
-
           <hr>
           <div class="d-flex justify-content-between mb-3">
             <h5>Tổng cộng:</h5>

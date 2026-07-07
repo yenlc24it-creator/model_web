@@ -97,6 +97,8 @@ public class AuthServlet extends HttpServlet {
         session.setAttribute("fullName", user.getFullName());
         session.setAttribute("role", user.getRole());
 
+        session.setAttribute("loginSuccess", "Đăng nhập thành công, xin chào " + user.getFullName() + "!");
+
         if (redirect != null && !redirect.isEmpty()) {
             response.sendRedirect(redirect);
         } else if ("ADMIN".equals(user.getRole())) {

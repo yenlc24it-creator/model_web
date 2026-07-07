@@ -56,6 +56,32 @@
     </style>
 </head>
 <body>
+<!-- Toast Notification -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+    <c:if test="${not empty sessionScope.loginSuccess}">
+        <div id="loginToast" class="toast align-items-center text-bg-success border-0 show" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-check-circle"></i> ${sessionScope.loginSuccess}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+        <% session.removeAttribute("loginSuccess"); %>
+    </c:if>
+    <c:if test="${not empty sessionScope.checkoutSuccess}">
+        <div id="checkoutToast" class="toast align-items-center text-bg-success border-0 show" role="alert">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-check-circle"></i> ${sessionScope.checkoutSuccess}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+        <% session.removeAttribute("checkoutSuccess"); %>
+    </c:if>
+</div>
+
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container">
@@ -99,7 +125,11 @@
                     <a class="nav-link position-relative" href="${contextPath}/cart">
                         <i class="fas fa-shopping-cart"></i> Giỏ hàng
                         <c:if test="${not empty sessionScope.cart}">
-                            <span class="cart-badge">${sessionScope.cart.size()}</span>
+                            <c:set var="cartTotalQty" value="0" />
+                            <c:forEach items="${sessionScope.cart}" var="entry">
+                                <c:set var="cartTotalQty" value="${cartTotalQty + entry.value}" />
+                            </c:forEach>
+                            <span class="cart-badge">${cartTotalQty}</span>
                         </c:if>
                     </a>
                 </li>
@@ -111,7 +141,13 @@
                                 <i class="fas fa-user"></i> ${sessionScope.fullName}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="${contextPath}/logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
+                                <li><h6 class="dropdown-header"><i class="fas fa-user-circle"></i> Xin chào, ${sessionScope.fullName}!</h6></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="${contextPath}/user/dashboard"><i class="fas fa-dashboard"></i> Dashboard</a></li>
+                                <li><a class="dropdown-item" href="${contextPath}/user/orders"><i class="fas fa-shopping-cart"></i> Đơn hàng</a></li>
+                                <li><a class="dropdown-item" href="${contextPath}/user/profile"><i class="fas fa-user-cog"></i> Thông tin tài khoản</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="${contextPath}/logout"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a></li>
                             </ul>
                         </li>
                     </c:when>

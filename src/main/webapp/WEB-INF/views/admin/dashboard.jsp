@@ -18,7 +18,6 @@
 <body>
 <div class="container-fluid">
     <div class="row">
-        <!-- Sidebar -->
         <div class="col-md-2 admin-sidebar">
             <h5 class="text-white text-center py-3">
                 <i class="fas fa-store"></i> Model Web
@@ -50,11 +49,6 @@
                         <i class="fas fa-users"></i> Người dùng
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="${contextPath}/admin/settings">
-                        <i class="fas fa-cog"></i> Cài đặt
-                    </a>
-                </li>
                 <li class="nav-item mt-3">
                     <a class="nav-link text-danger" href="${contextPath}/logout">
                         <i class="fas fa-sign-out-alt"></i> Đăng xuất
@@ -63,7 +57,6 @@
             </ul>
         </div>
 
-        <!-- Main Content -->
         <div class="col-md-10 p-4">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2><i class="fas fa-dashboard"></i> Dashboard</h2>
@@ -72,7 +65,6 @@
                 </div>
             </div>
 
-            <!-- Stats Cards -->
             <div class="row">
                 <div class="col-md-3">
                     <div class="card text-white bg-primary mb-3">
@@ -130,7 +122,6 @@
                 </div>
             </div>
 
-            <!-- Recent Orders -->
             <div class="card">
                 <div class="card-header">
                     <h5><i class="fas fa-clock"></i> Đơn hàng gần đây</h5>
@@ -153,18 +144,18 @@
                                 <tr>
                                     <td>${order.orderCode}</td>
                                     <td>${order.customerName}</td>
-                                    <td><fmt:formatDate value="${order.orderDate}" pattern="dd/MM/yyyy HH:mm"/></td>
+                                    <td>${order.orderDate.dayOfMonth}/${order.orderDate.monthValue}/${order.orderDate.year} ${order.orderDate.hour}:${order.orderDate.minute}</td>
                                     <td><fmt:formatNumber value="${order.totalAmount}" type="currency" currencySymbol="₫"/></td>
                                     <td>
-                                                <span class="badge bg-${order.status == 'PENDING' ? 'warning' :
-                                                                    order.status == 'PROCESSING' ? 'info' :
-                                                                    order.status == 'SHIPPED' ? 'primary' :
-                                                                    order.status == 'DELIVERED' ? 'success' : 'danger'}">
-                                                        ${order.status}
-                                                </span>
+                                        <span class="badge bg-${order.status == 'PENDING' ? 'warning' :
+                                                                     order.status == 'PROCESSING' ? 'info' :
+                                                                     order.status == 'SHIPPED' ? 'primary' :
+                                                                     order.status == 'DELIVERED' ? 'success' : 'danger'}">
+                                            ${order.status}
+                                        </span>
                                     </td>
                                     <td>
-                                        <a href="${contextPath}/admin/orders?detail=${order.id}" class="btn btn-sm btn-info">
+                                        <a href="${contextPath}/admin/orders" class="btn btn-sm btn-info">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                     </td>

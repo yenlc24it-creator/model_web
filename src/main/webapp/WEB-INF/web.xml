@@ -77,6 +77,29 @@
     <url-pattern>/admin/*</url-pattern>
   </servlet-mapping>
 
+  <servlet>
+    <servlet-name>UserServlet</servlet-name>
+    <servlet-class>com.model_web.controller.UserServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>UserServlet</servlet-name>
+    <url-pattern>/user</url-pattern>
+    <url-pattern>/user/*</url-pattern>
+  </servlet-mapping>
+
+  <error-page>
+    <error-code>404</error-code>
+    <location>/WEB-INF/views/error.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>403</error-code>
+    <location>/WEB-INF/views/error.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>500</error-code>
+    <location>/WEB-INF/views/error.jsp</location>
+  </error-page>
+
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
   </welcome-file-list>

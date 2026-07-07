@@ -125,7 +125,9 @@ public class AdminServlet extends HttpServlet {
             throws ServletException, IOException {
 
         List<Product> products = productDAO.findAll();
+        List<Category> categories = categoryDAO.findAll();
         request.setAttribute("products", products);
+        request.setAttribute("categories", categories);
         request.getRequestDispatcher("/WEB-INF/views/admin/products.jsp").forward(request, response);
     }
 
@@ -139,6 +141,12 @@ public class AdminServlet extends HttpServlet {
 
     private void showOrders(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        String detailId = request.getParameter("detail");
+        if (detailId != null && !detailId.isEmpty()) {
+            Order order = orderDAO.findById(Long.parseLong(detailId)).orElse(null);
+            request.setAttribute("orderDetail", order);
+        }
 
         String status = request.getParameter("status");
         List<Order> orders;

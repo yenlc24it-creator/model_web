@@ -18,7 +18,6 @@
 <body>
 <div class="container-fluid">
     <div class="row">
-        <!-- Sidebar -->
         <div class="col-md-2 admin-sidebar">
             <h5 class="text-white text-center py-3">
                 <i class="fas fa-store"></i> Model Web
@@ -58,7 +57,6 @@
             </ul>
         </div>
 
-        <!-- Main Content -->
         <div class="col-md-10 p-4">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2><i class="fas fa-box"></i> Quản lý sản phẩm</h2>
@@ -96,12 +94,12 @@
                                     <td><fmt:formatNumber value="${product.price}" type="currency" currencySymbol="₫"/></td>
                                     <td>${product.stock}</td>
                                     <td>
-                                                <span class="badge bg-${product.active ? 'success' : 'danger'}">
-                                                        ${product.active ? 'Hoạt động' : 'Ẩn'}
-                                                </span>
+                                        <span class="badge bg-${product.active ? 'success' : 'danger'}">
+                                            ${product.active ? 'Hoạt động' : 'Ẩn'}
+                                        </span>
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm btn-warning" onclick="editProduct(${product.id})">
+                                        <button class="btn btn-sm btn-warning" onclick="editProduct(${product.id}, '${product.name}', '${product.slug}', '${product.description}', ${product.price}, ${product.salePrice != null ? product.salePrice : ''}, ${product.stock}, ${product.category.id}, '${product.imageUrl}', ${product.active})">
                                             <i class="fas fa-edit"></i>
                                         </button>
                                         <button class="btn btn-sm btn-danger" onclick="deleteProduct(${product.id})">
@@ -119,6 +117,181 @@
     </div>
 </div>
 
+<!-- Add Product Modal -->
+<div class="modal fade" id="addProductModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form action="${contextPath}/admin/product/add" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title">Thêm sản phẩm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Tên sản phẩm</label>
+                            <input type="text" name="name" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Slug</label>
+                            <input type="text" name="slug" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mô tả</label>
+                        <textarea name="description" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Giá</label>
+                            <input type="number" name="price" class="form-control" step="0.01" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Giá khuyến mãi</label>
+                            <input type="number" name="salePrice" class="form-control" step="0.01">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Tồn kho</label>
+                            <input type="number" name="stock" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Danh mục</label>
+                            <select name="categoryId" class="form-control" required>
+                                <option value="">-- Chọn danh mục --</option>
+                                <c:forEach items="${categories}" var="cat">
+                                    <option value="${cat.id}">${cat.name}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Hình ảnh URL</label>
+                            <input type="text" name="imageUrl" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Thêm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Product Modal -->
+<div class="modal fade" id="editProductModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form action="${contextPath}/admin/product/update" method="post">
+                <input type="hidden" name="id" id="edit-id">
+                <div class="modal-header">
+                    <h5 class="modal-title">Sửa sản phẩm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Tên sản phẩm</label>
+                            <input type="text" name="name" id="edit-name" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Slug</label>
+                            <input type="text" name="slug" id="edit-slug" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Mô tả</label>
+                        <textarea name="description" id="edit-description" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Giá</label>
+                            <input type="number" name="price" id="edit-price" class="form-control" step="0.01" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Giá khuyến mãi</label>
+                            <input type="number" name="salePrice" id="edit-salePrice" class="form-control" step="0.01">
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Tồn kho</label>
+                            <input type="number" name="stock" id="edit-stock" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Danh mục</label>
+                            <select name="categoryId" id="edit-categoryId" class="form-control" required>
+                                <option value="">-- Chọn danh mục --</option>
+                                <c:forEach items="${categories}" var="cat">
+                                    <option value="${cat.id}">${cat.name}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Hình ảnh URL</label>
+                            <input type="text" name="imageUrl" id="edit-imageUrl" class="form-control">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input type="checkbox" name="active" id="edit-active" class="form-check-input" value="true">
+                            <label class="form-check-label">Hoạt động</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Product Modal -->
+<div class="modal fade" id="deleteProductModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="${contextPath}/admin/product/delete" method="post">
+                <input type="hidden" name="id" id="delete-id">
+                <div class="modal-header">
+                    <h5 class="modal-title">Xóa sản phẩm</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Bạn có chắc chắn muốn xóa sản phẩm này?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-danger">Xóa</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function editProduct(id, name, slug, description, price, salePrice, stock, categoryId, imageUrl, active) {
+        document.getElementById('edit-id').value = id;
+        document.getElementById('edit-name').value = name;
+        document.getElementById('edit-slug').value = slug;
+        document.getElementById('edit-description').value = description;
+        document.getElementById('edit-price').value = price;
+        document.getElementById('edit-salePrice').value = salePrice || '';
+        document.getElementById('edit-stock').value = stock;
+        document.getElementById('edit-categoryId').value = categoryId;
+        document.getElementById('edit-imageUrl').value = imageUrl;
+        document.getElementById('edit-active').checked = active;
+        new bootstrap.Modal(document.getElementById('editProductModal')).show();
+    }
+
+    function deleteProduct(id) {
+        document.getElementById('delete-id').value = id;
+        new bootstrap.Modal(document.getElementById('deleteProductModal')).show();
+    }
+</script>
 </body>
 </html>

@@ -29,5 +29,13 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    setTimeout(function() {
+        document.querySelectorAll('.toast.show').forEach(function(toast) {
+            var bsToast = new bootstrap.Toast(toast);
+            bsToast.hide();
+        });
+    }, 4000);
+</script>
 </body>
 </html>
